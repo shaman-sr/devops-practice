@@ -1,0 +1,66 @@
+name: crud-fastapi
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+
+env:
+  IMAGE_NAME: crud-fastapi
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: demo
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+      
+      steps:
+        - name: Checkout code
+          uses: actions/checkout@v4
+      
+        - name: Setup python
+          uses: actions/setup-python@v5
+          with:
+            python-version: '3.11'
+        
+        - name: Install dependencies
+          run: |
+            pip install -r requirements.txt
+        
+        - name: Build docker image
+          run: |
+            docker build -t IMAGE_NAME .
+        
+        - name: Log in to dockerhub
+          run: |
+            echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ shamansr10 }}" --password-stdin
+        
+        - name: Tag docker image
+          run: |
+            docker tag crud-fastapi shamansr10/$IMAGE_NAME:latest
+        
+        - name: Push docker image
+          run: |
+            docker push shamansr10/$IMAGE_NAME:latest
+        
+        - name: Wait for app
+          run: |
+            sleep 15
+
+        - name: Stop container
+          run: |
+            docker compose down
+      
