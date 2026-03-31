@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: crud-fastapi
+spec: 
+  replicas: 2
+  selector:
+    matchLabels:
+      app: crud-fastapi
+  template:
+    metadata:
+      labels:
+        app: crud-fastapi
+    spec:
+      containers:
+      - name: crud-fastapi
+        image: shamansr10/crud-fastapi:latest
+        ports:
+        - containerPort: 8000

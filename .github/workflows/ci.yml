@@ -7,6 +7,7 @@ on:
 
 env:
   IMAGE_NAME: crud-fastapi
+  IMAGE_TAG: ${{ github.sha }}
 
 jobs:
   build-and-test:
@@ -50,8 +51,10 @@ jobs:
       
       - name: Tag docker image
         run: |
+          docker tag crud-fastapi ${{ secrets.DOCKER_USERNAME }}/$IMAGE_NAME:${{ github.sha }}
           docker tag crud-fastapi ${{ secrets.DOCKER_USERNAME }}/$IMAGE_NAME:latest
       
       - name: Push docker image
         run: |
+          docker tag crud-fastapi ${{ secrets.DOCKER_USERNAME }}/$IMAGE_NAME:${{ github.sha }}
           docker push ${{ secrets.DOCKER_USERNAME }}/$IMAGE_NAME:latest

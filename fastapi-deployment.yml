@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: crud-fastapi
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: crud-fastapi
+  template:
+    metadata:
+      labels:
+        app: crud-fastapi
+    spec:
+      containers:
+      - name: crud-fastapi
+        image: shamansr10/crud-fastapi:latest
+        ports:
+        - containerPort: 8000
+        env:
+          - name: DATABASE_URL
+            value: postgresql://postgres:postgres@postgres:5432/demo
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits: 
+            cpu: "500m"
+            memory: "512Mi"
