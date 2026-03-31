@@ -27,31 +27,31 @@ jobs:
           --health-timeout=5s
           --health-retries=5
       
-      steps:
-        - name: Checkout code
-          uses: actions/checkout@v4
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+    
+      - name: Setup python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
       
-        - name: Setup python
-          uses: actions/setup-python@v5
-          with:
-            python-version: '3.11'
-        
-        - name: Install dependencies
-          run: |
-            pip install -r requirements.txt
-        
-        - name: Build docker image
-          run: |
-            docker build -t $IMAGE_NAME .
-        
-        - name: Log in to dockerhub
-          run: |
-            echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-        
-        - name: Tag docker image
-          run: |
-            docker tag crud-fastapi ${{ secrets.DOCKER_USERNAME }}/$IMAGE_NAME:latest
-        
-        - name: Push docker image
-          run: |
-            docker push ${{ secrets.DOCKER_USERNAME }}/$IMAGE_NAME:latest
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+      
+      - name: Build docker image
+        run: |
+          docker build -t $IMAGE_NAME .
+      
+      - name: Log in to dockerhub
+        run: |
+          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+      
+      - name: Tag docker image
+        run: |
+          docker tag crud-fastapi ${{ secrets.DOCKER_USERNAME }}/$IMAGE_NAME:latest
+      
+      - name: Push docker image
+        run: |
+          docker push ${{ secrets.DOCKER_USERNAME }}/$IMAGE_NAME:latest
