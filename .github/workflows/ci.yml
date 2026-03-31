@@ -42,25 +42,16 @@ jobs:
         
         - name: Build docker image
           run: |
-            docker build -t IMAGE_NAME .
+            docker build -t $IMAGE_NAME .
         
         - name: Log in to dockerhub
           run: |
-            echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ shamansr10 }}" --password-stdin
+            echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
         
         - name: Tag docker image
           run: |
-            docker tag crud-fastapi shamansr10/$IMAGE_NAME:latest
+            docker tag crud-fastapi ${{ secrets.DOCKER_USERNAME }}/$IMAGE_NAME:latest
         
         - name: Push docker image
           run: |
-            docker push shamansr10/$IMAGE_NAME:latest
-        
-        - name: Wait for app
-          run: |
-            sleep 15
-
-        - name: Stop container
-          run: |
-            docker compose down
-      
+            docker push ${{ secrets.DOCKER_USERNAME }}/$IMAGE_NAME:latest
